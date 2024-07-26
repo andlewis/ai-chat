@@ -1,1 +1,16 @@
-/* You can add global styles to this file, and also import other style files */
+//
+// Import Bootstrap
+//
+
+@import "bootstrap/scss/bootstrap";
+
+
+//
+// Import Bootstrap Icons w/ custom path to fonts folder
+//
+
+@import "bootstrap-icons/font/bootstrap-icons";
+
+// * {
+//     border:1px solid red;
+// }
