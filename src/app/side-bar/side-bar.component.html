@@ -1,30 +1,31 @@
-<div class="bg-body-tertiary h-100" style="width: 4.5rem;">
-   
-    <ul class="nav nav-pills nav-flush flex-column mb-auto text-center">
-      <li class="nav-item">
-        <a href="#" class="nav-link active py-3 border-bottom rounded-0" aria-current="page" data-bs-toggle="tooltip" data-bs-placement="right" aria-label="Home" data-bs-original-title="Home">
-          <i class="bi-house"></i>
-        </a>
-      </li>
-      <li>
-        <a href="#" class="nav-link py-3 border-bottom rounded-0" data-bs-toggle="tooltip" data-bs-placement="right" aria-label="Dashboard" data-bs-original-title="Dashboard">
-          <i class="bi-speedometer2"></i>
-        </a>
-      </li>
-      <li>
-        <a href="#" class="nav-link py-3 border-bottom rounded-0" data-bs-toggle="tooltip" data-bs-placement="right" aria-label="Orders" data-bs-original-title="Orders">
-          <i class="bi-table"></i>
-        </a>
-      </li>
-      <li>
-        <a href="#" class="nav-link py-3 border-bottom rounded-0" data-bs-toggle="tooltip" data-bs-placement="right" aria-label="Products" data-bs-original-title="Products">
-          <i class="bi-grid"></i>
-        </a>
-      </li>
-      <li>
-        <a href="#" class="nav-link py-3 border-bottom rounded-0" data-bs-toggle="tooltip" data-bs-placement="right" aria-label="Customers" data-bs-original-title="Customers">
-          <i class="bi-person-circle"></i>
-        </a>
-      </li>
-    </ul>
+<div class="bg-body-tertiary h-100" style="width: 20rem;">
+
+  <div class="p-2 d-flex justify-content-between" style="height:5%">
+    <button class="btn btn-sm" type="button" (click)="onNew()">
+      <i class="bi-journal-plus"></i>
+    </button>
+
+    <span>AI Chat</span>
+
+    <button class="btn btn-sm" type="button" >
+      <i class="bi-gear"></i>
+    </button>
   </div>
+
+  <ul class="list-group overflow-auto" style="max-height: 94%;">
+
+    @for(conversation of conversations();track conversation){
+    <li class="list-group-item d-flex justify-content-between text-start">
+      <button type="button" class="btn" (click)="onSelect(conversation)">
+        <div>{{conversation.title}}</div>
+        <div class="text-muted small-text">{{conversation.on | date : 'long' }}</div>
+      </button>
+
+      <button class="btn btn-sm">
+        <i class="bi-gear"></i>
+      </button>
+    </li>
+    }
+
+  </ul>
+</div>

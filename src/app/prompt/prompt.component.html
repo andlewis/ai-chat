@@ -1,11 +1,11 @@
 <div class="card card-body border-0 pb-1">
 
     <div class="input-group">
-        <textarea class="form-control custom-control bg-light" rows="2" placeholder="Message the AI"  aria-label="Message the AI" aria-describedby="submit-button"></textarea>     
-        <button class="btn btn-outline-secondary" type="button" id="submit-button">
+        <textarea [(ngModel)]="text" class="form-control custom-control bg-light" 
+            (keyup)="onKeyUp($event)"
+            rows="2" placeholder="Message the AI" aria-label="Message the AI" aria-describedby="submit-button"></textarea>
+        <button class="btn btn-outline-secondary" type="button" id="submit-button" (click)="onClickSend()">
             <i class="bi-arrow-up-short"></i>
         </button>
     </div>
 </div>
-
-
