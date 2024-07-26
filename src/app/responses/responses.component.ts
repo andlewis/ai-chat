@@ -1,11 +1,12 @@
 import { DatePipe } from '@angular/common';
 import { Component, computed, input, Input, OnInit } from '@angular/core';
 import { Conversation } from '../data/models';
+import { MarkdownModule } from 'ngx-markdown';
 
 @Component({
   selector: 'app-responses',
   standalone: true,
-  imports: [DatePipe],
+  imports: [DatePipe, MarkdownModule],
   templateUrl: './responses.component.html',
   styleUrl: './responses.component.scss'
 })

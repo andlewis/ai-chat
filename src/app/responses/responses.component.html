@@ -3,7 +3,8 @@
     @if(numberOfMessages()!>0){
     @for(messages of conversation()!.messages;track messages){
     <span class="card card-body my-1 me-auto ms-auto border-1 radius-2 bg-light" style="max-width:60%" [class.border-0]="messages.role==2" [class.bg-light]="messages.role==1">
-        <div class="text-left">{{messages.text}}
+        <div class="text-left">
+            <markdown [data]="messages.text"></markdown>
             <div class="text-muted ms-auto small-text">{{messages.on | date : 'long' }}</div>
         </div>
     </span>
