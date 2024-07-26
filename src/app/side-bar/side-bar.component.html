@@ -7,7 +7,7 @@
 
     <span>AI Chat</span>
 
-    <button class="btn btn-sm" type="button" >
+    <button class="btn btn-sm" type="button" (click)="onSettings()" >
       <i class="bi-gear"></i>
     </button>
   </div>
@@ -29,3 +29,5 @@
 
   </ul>
 </div>
+
+<app-settings-modal [isVisible]="isSettingsVisible" (hide)="isSettingsVisible = false"></app-settings-modal>

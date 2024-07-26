@@ -1,0 +1,25 @@
+<div class="modal" tabindex="-1" id="settingsModal" [class.modal-shown]="isVisible()">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">AI Chat Settings</h5>
+          <button type="button" class="btn-close" (click)="onHide()"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="deployment">Deployment</label>
+            <input type="text" class="form-control" id="deployment" [(ngModel)]="deployment" placeholder="Deployment"/>
+          </div>
+          <div class="mb-3">
+            <label for="apiKey">API Key</label>
+            <input type="text" class="form-control" id="apiKey" [(ngModel)]="apiKey" placeholder="API Key"/>
+          </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-danger me-auto" (click)="onDelete()">Delete all Conversations</button>
+          <button type="button" class="btn btn-secondary" (click)="onHide()">Close</button>
+          <button type="button" class="btn btn-primary" (click)="onSave()">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
