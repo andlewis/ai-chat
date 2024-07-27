@@ -27,6 +27,7 @@ export class AppComponent implements OnInit {
   config: Config = {};
   error: any = null;
   isLoading = false;
+  isExpanded = false;
 
   key_conversations = 'conversations';
   key_config = 'config';
@@ -46,8 +47,18 @@ export class AppComponent implements OnInit {
       }
     });
     this.conversation = this.conversations[this.selectedIndex];
-
+    this.checkMobile();
     this.scrollBottom();
+  }
+
+  checkMobile() {
+    var ua = navigator.userAgent;
+
+    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i.test(ua))
+      this.isExpanded = false;
+
+    else
+      this.isExpanded = true;
   }
 
   scrollBottom(timeout: number = 1000) {
@@ -79,7 +90,7 @@ export class AppComponent implements OnInit {
       this.conversation.messages!.push({ content: response.choices[0].message.content ?? '', role: 'system', on: new Date() });
       this.conversations[this.selectedIndex] = this.conversation!;
       this.scrollBottom(1);
-      setTimeout(()=>this.onSummarize(), 9000);
+      setTimeout(() => this.onSummarize(), 9000);
     }).catch((error) => {
       if (error.code == '429') {
         console.log('Retrying...');
@@ -109,7 +120,7 @@ export class AppComponent implements OnInit {
       if (error.code == '429') {
         console.log('Retrying Summary...');
         setTimeout(() => this.onSummarize(), 5000);
-      } 
+      }
     });
   }
 
@@ -127,5 +138,11 @@ export class AppComponent implements OnInit {
     this.conversations.unshift(conversation);
     this.conversation = conversation;
   }
+
+  onToggleExpanded() {
+    this.isExpanded = !this.isExpanded;
+  }
+
+
 
 }

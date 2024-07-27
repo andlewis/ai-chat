@@ -1,9 +1,13 @@
 <div class="d-flex vh-100">
-  <app-side-bar class="flex-column flex-shrink-0" [config]="config" [conversations]="conversations" (select)="onSelect($event)" (newConversation)="onNew()"></app-side-bar>
+  <app-side-bar class="flex-column flex-shrink-0" [isExpanded]="isExpanded" [config]="config"
+    [conversations]="conversations" (toggleExpanded)="onToggleExpanded()" (select)="onSelect($event)"
+    (newConversation)="onNew()"></app-side-bar>
   <div class="flex-column flex-grow-1 h-100 d-flex">
-    <app-header class="flex-column flex-grow-0" [conversation]="conversation" [config]="config"></app-header>
-    <app-responses id="responses" class="flex-row flex-grow-1 overflow-auto" [conversation]="conversation" [isLoading]="isLoading" [error]="error"></app-responses>
+    <app-header class="flex-column flex-grow-0" [conversation]="conversation" [config]="config"
+      [isExpanded]="isExpanded" (toggleExpanded)="onToggleExpanded()"></app-header>
+    <app-responses id="responses" class="flex-row flex-grow-1 overflow-auto" [conversation]="conversation"
+      [isLoading]="isLoading" [error]="error"></app-responses>
     <app-prompt class="flex-row flex-grow-0" (send)="onSend($event)"></app-prompt>
-    <app-footer class="flex-row flex-grow-0"></app-footer> 
+    <app-footer class="flex-row flex-grow-0"></app-footer>
   </div>
 </div>

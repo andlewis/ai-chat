@@ -15,8 +15,10 @@ export class SideBarComponent {
   newConversation = output();
   config = input.required<Config>();
   select = output<Conversation>();
+  toggleExpanded = output();
 
-  isSettingsVisible=false;
+
+  isExpanded = input.required<boolean>();
 
   onNew() {
     this.newConversation.emit();
@@ -26,8 +28,9 @@ export class SideBarComponent {
     this.select.emit(conversation);
   }
 
-  onSettings(){
-    this.isSettingsVisible = true;
+
+  onCollapse(){
+    this.toggleExpanded.emit();
   }
 
 }
