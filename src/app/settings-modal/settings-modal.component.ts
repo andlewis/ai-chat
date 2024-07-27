@@ -1,5 +1,7 @@
 import { Component, input, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { persistData } from '../data/context';
+import { Config } from '../data/models';
 
 @Component({
   selector: 'app-settings-modal',
@@ -10,10 +12,9 @@ import { FormsModule } from '@angular/forms';
 })
 export class SettingsModalComponent {
   isVisible = input.required<boolean>();
+  config = input.required<Config>();
   hide = output();
-
-  deployment: string | null = null;
-  apiKey: string | null = null;
+  change = output<Config>();
 
   onHide() {
     this.hide.emit();
@@ -24,6 +25,8 @@ export class SettingsModalComponent {
   }
 
   onSave() {
+    persistData('config', this.config());
+    this.change.emit(this.config());
     this.onHide();
   }
 }

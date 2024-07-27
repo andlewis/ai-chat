@@ -1,5 +1,5 @@
 import { Component, input, Input } from '@angular/core';
-import { Conversation } from '../data/models';
+import { Config, Conversation } from '../data/models';
 
 @Component({
   selector: 'app-header',
@@ -10,4 +10,5 @@ import { Conversation } from '../data/models';
 })
 export class HeaderComponent {
   conversation = input.required<Conversation>();
+  config = input.required<Config>();
 }

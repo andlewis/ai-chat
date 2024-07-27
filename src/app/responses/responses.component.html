@@ -1,13 +1,27 @@
 <div class="p-3">
 
-    @if(numberOfMessages()!>0){
     @for(messages of conversation()!.messages;track messages){
-    <span class="card card-body my-1 me-auto ms-auto border-1 radius-2 bg-light" style="max-width:60%" [class.border-0]="messages.role==2" [class.bg-light]="messages.role==1">
+    <span class="card card-body my-1 me-auto ms-auto border-1 radius-2 bg-light fixed-width"
+        [class.border-0]="messages.role=='system'" [class.bg-light]="messages.role=='user'">
         <div class="text-left">
-            <markdown [data]="messages.text"></markdown>
+            <markdown [data]="messages.content"></markdown>
             <div class="text-muted ms-auto small-text">{{messages.on | date : 'long' }}</div>
         </div>
     </span>
     }
+
+    @if(isLoading()){
+    <div class="my-1 me-auto ms-auto fixed-width">
+        <div class="spinner-grow text-info" role="status">
+            <span class="ms-5">Thinking...</span>
+        </div>
+    </div>
     }
+
+    @if(error()){
+    <div class="alert bg-danger text-light fixed-width my-1 me-auto ms-auto" >
+        {{error().message}}
+    </div>
+    }
+
 </div>

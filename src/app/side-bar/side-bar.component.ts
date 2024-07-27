@@ -1,5 +1,5 @@
 import { Component, input, output } from '@angular/core';
-import { Conversation } from '../data/models';
+import { Config, Conversation } from '../data/models';
 import { DatePipe } from '@angular/common';
 import { SettingsModalComponent } from '../settings-modal/settings-modal.component';
 
@@ -13,6 +13,7 @@ import { SettingsModalComponent } from '../settings-modal/settings-modal.compone
 export class SideBarComponent {
   conversations = input.required<Conversation[]>();
   newConversation = output();
+  config = input.required<Config>();
   select = output<Conversation>();
 
   isSettingsVisible=false;

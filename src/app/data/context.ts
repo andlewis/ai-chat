@@ -18,16 +18,16 @@ export const addSampleData = (): Conversation[] => {
             title: 'Sample Conversation',
             on: new Date(),
             messages: [
-                { text: 'Hello!', role: 1, on: new Date() },
-                { text: 'Hi!', role: 2, on: new Date() },
-                { text: 'How are you?', role: 1, on: new Date() },
-                { text: 'Good, thanks!', role: 2, on: new Date() },
-                { text: 'What are you doing?', role: 1, on: new Date() },
-                { text: 'I am working on my project.', role: 2, on: new Date() },
-                { text: 'That\'s cool!', role: 1, on: new Date() },
-                { text: 'Thanks!', role: 2, on: new Date() },
-                { text: 'Bye!', role: 1, on: new Date() },
-                { text: 'Goodbye!', role: 2, on: new Date() },
+                { content: 'Hello!', role: 'user', on: new Date() },
+                { content: 'Hi!', role: 'system', on: new Date() },
+                { content: 'How are you?', role: 'user', on: new Date() },
+                { content: 'Good, thanks!', role: 'system', on: new Date() },
+                { content: 'What are you doing?', role: 'user', on: new Date() },
+                { content: 'I am working on my project.', role: 'system', on: new Date() },
+                { content: 'That\'s cool!', role: 'user', on: new Date() },
+                { content: 'Thanks!', role: 'system', on: new Date() },
+                { content: 'Bye!', role: 'user', on: new Date() },
+                { content: 'Goodbye!', role: 'system', on: new Date() },
             ]
         }
     ]

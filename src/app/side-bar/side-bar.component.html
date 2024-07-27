@@ -1,13 +1,13 @@
 <div class="bg-body-tertiary h-100" style="width: 20rem;">
 
   <div class="p-2 d-flex justify-content-between" style="height:5%">
-    <button class="btn btn-sm" type="button" (click)="onNew()">
+    <button class="btn btn-sm" type="button" (click)="onNew()" title="Add New">
       <i class="bi-journal-plus"></i>
     </button>
 
     <span>AI Chat</span>
 
-    <button class="btn btn-sm" type="button" (click)="onSettings()" >
+    <button class="btn btn-sm" type="button" (click)="onSettings()" title="settings" >
       <i class="bi-gear"></i>
     </button>
   </div>
@@ -21,7 +21,7 @@
         <div class="text-muted small-text">{{conversation.on | date : 'long' }}</div>
       </button>
 
-      <button class="btn btn-sm">
+      <button class="btn btn-sm" title="settings">
         <i class="bi-gear"></i>
       </button>
     </li>
@@ -30,4 +30,4 @@
   </ul>
 </div>
 
-<app-settings-modal [isVisible]="isSettingsVisible" (hide)="isSettingsVisible = false"></app-settings-modal>
+<app-settings-modal [isVisible]="isSettingsVisible" (hide)="isSettingsVisible = false" [config]="config()"></app-settings-modal>
