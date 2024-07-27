@@ -79,7 +79,7 @@ export class AppComponent implements OnInit {
       this.conversation.messages!.push({ content: response.choices[0].message.content ?? '', role: 'system', on: new Date() });
       this.conversations[this.selectedIndex] = this.conversation!;
       this.scrollBottom(1);
-      this.onSummarize();
+      setTimeout(()=>this.onSummarize(), 9000);
     }).catch((error) => {
       if (error.code == '429') {
         console.log('Retrying...');
@@ -95,7 +95,7 @@ export class AppComponent implements OnInit {
     const c = this.conversation.messages.map(m => m.role + ': ' + m.content).join('\n');
 
     const p: ChatCompletionCreateParamsNonStreaming = {
-      messages: [{ role: 'user', content: 'summarize the following conversation: \n' + c } as ChatCompletionUserMessageParam],
+      messages: [{ role: 'user', content: 'summarize the following conversation in one concise phrase of no more than 7 words: \n' + c } as ChatCompletionUserMessageParam],
       model: this.config.deployment!
     };
 
@@ -107,13 +107,15 @@ export class AppComponent implements OnInit {
       persistData(this.key_conversations, this.conversations);
     }).catch((error) => {
       if (error.code == '429') {
-        alert('too many questions');
-      }
+        console.log('Retrying Summary...');
+        setTimeout(() => this.onSummarize(), 5000);
+      } 
     });
   }
 
   onSelect(conversation: Conversation) {
     this.isLoading = false;
+    this.error = null;
     this.conversation = conversation;
     this.selectedIndex = this.conversations.indexOf(conversation);
     this.scrollBottom(100);
