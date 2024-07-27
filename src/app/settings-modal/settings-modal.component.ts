@@ -29,4 +29,16 @@ export class SettingsModalComponent {
     this.change.emit(this.config());
     this.onHide();
   }
+
+  onCopy(){
+    navigator.clipboard.writeText(JSON.stringify(this.config()));
+  }
+
+  onLoad(){
+    navigator.clipboard.readText().then(text => {
+      const o:Config = JSON.parse(text) as Config;
+      persistData('config', o);
+      this.change.emit(o);
+    });
+  }
 }
