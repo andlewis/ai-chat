@@ -235,6 +235,7 @@ export class AppComponent implements OnInit {
       this.conversation.messages.push({ content: `I am sorry I'm unable to complete the request.\n` + runResponse.lastError?.message, role: 'assistant', on: new Date() });
     }
     persistData(this.key_conversations, this.conversations);
+    this.onSummarize();
     this.isLoading = false;
     this.scrollBottom(1);
   }
