@@ -10,9 +10,10 @@ import { ResponsesComponent } from './responses/responses.component';
 import { SideBarComponent } from './side-bar/side-bar.component';
 
 import { AzureOpenAI } from "openai";
-import { ChatCompletionCreateParamsNonStreaming, ChatCompletionUserMessageParam, ImageGenerateParams } from 'openai/resources/index.mjs';
+import { ChatCompletionCreateParamsNonStreaming, ChatCompletionTool, ChatCompletionUserMessageParam, ImageGenerateParams } from 'openai/resources/index.mjs';
 import { AssistantsClient, AzureKeyCredential, RequiredFunctionToolCall, ThreadMessage, ToolDefinition } from '@azure/openai-assistants';
 import { Thread } from 'openai/resources/beta/threads/threads.mjs';
+import { RequestOptions } from 'openai/core.mjs';
 
 @Component({
   selector: 'app-root',
@@ -58,43 +59,61 @@ export class AppComponent implements OnInit {
     return (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i.test(ua));
   }
 
-  scrollBottom(timeout: number = 1000) {
+  scrollBottom(timeout: number = 1000, resetLoading: boolean = false) {
     setTimeout(() => {
       const responses = document.getElementById(this.key_responses_id);
       responses!.scrollTop = responses!.scrollHeight;
+      if (resetLoading) {
+        this.isLoading = false;
+      }
     }, timeout);
   }
 
   async onSend(text: string) {
     this.conversation.messages.push({ content: text, role: 'user', on: new Date() });
     this.isLoading = true;
-    this.scrollBottom(1);
+    this.scrollBottom(1, false);
     const p: ChatCompletionCreateParamsNonStreaming = {
       messages: this.conversation.messages.map(m => ({ role: m.role, content: m.content } as ChatCompletionUserMessageParam)),
-      model: this.config.deployment!
+      model: this.config.deployment!,
+      tools: this.getTools().map((t: any) => ({ function: t.function, type: 'function' }))
     };
 
-    //this.GenerateImage(text);
-    await this.GenerateAssistant();
-    //this.GetCompletion(p);
+    ////this.GenerateImage(text);
+    //await this.GenerateAssistant();
+    this.GetCompletion(p);
+
+    this.scrollBottom(100);
+
+    persistData(this.key_conversations, this.conversations);
+    setTimeout(() => this.onSummarize(), 9000);
   }
 
   GetCompletion(p: any) {
     const client = new AzureOpenAI({ apiKey: this.config.apiKey, endpoint: this.config.endpoint, apiVersion: this.config.apiVersion, dangerouslyAllowBrowser: true });
 
     client.chat.completions.create(p).then((response) => {
-      this.isLoading = false;
-      this.conversation.messages!.push({ content: response.choices[0].message.content ?? '', role: 'system', on: new Date() });
+      console.log('response', response);
+      if (response.choices[0].finish_reason === 'tool_calls') {
+        response.choices[0].message!.tool_calls!.forEach(async (toolCall: any) => {
+          const content = await this.getResolvedToolOutput(toolCall);
+          this.conversation.messages!.push({ content: content.output ?? '', role: 'assistant', on: new Date() });
+          persistData(this.key_conversations, this.conversations);
+          this.scrollBottom(100, true);
+        });
+      } else {
+        this.conversation.messages!.push({ content: response.choices[0].message.content ?? '', role: 'assistant', on: new Date() });
+        persistData(this.key_conversations, this.conversations);
+        this.scrollBottom(100, true);
+      }
       this.conversations[this.selectedIndex] = this.conversation!;
-      this.scrollBottom(1);
-      setTimeout(() => this.onSummarize(), 9000);
     }).catch((error) => {
       if (error.code == '429') {
         console.log('Retrying...');
         setTimeout(() => this.GetCompletion(p), 5000);
       } else {
         this.error = error;
-        this.isLoading = false;
+
       }
     });
   }
@@ -104,13 +123,13 @@ export class AppComponent implements OnInit {
 
     const p: ChatCompletionCreateParamsNonStreaming = {
       messages: [{ role: 'user', content: 'summarize the following conversation in one concise phrase of no more than 7 words: \n' + c } as ChatCompletionUserMessageParam],
-      model: this.config.deployment!
+      model: this.config.deployment!,
+      tools: this.getTools().map((t: any) => ({ function: t.function, type: 'function' }))
     };
 
     const client = new AzureOpenAI({ apiKey: this.config.apiKey, endpoint: this.config.endpoint, apiVersion: this.config.apiVersion, dangerouslyAllowBrowser: true });
 
     client.chat.completions.create(p).then(response => {
-      this.isLoading = false;
       this.conversation.title = response.choices[0].message.content ?? '';
       persistData(this.key_conversations, this.conversations);
     }).catch(error => {
@@ -145,17 +164,17 @@ export class AppComponent implements OnInit {
 
   }
 
-  onDeleteConversation(conversation:Conversation){
+  onDeleteConversation(conversation: Conversation) {
     const index = this.conversations.indexOf(conversation);
     this.conversations.splice(index, 1);
-    if(this.selectedIndex === index){
+    if (this.selectedIndex === index) {
       this.selectedIndex = 0;
       this.conversation = this.conversations[this.selectedIndex];
     }
     persistData(this.key_conversations, this.conversations);
   }
 
-  onDeleteMessage(message: Message) { 
+  onDeleteMessage(message: Message) {
     const index = this.conversation.messages.indexOf(message);
     this.conversation.messages.splice(index, 1);
     persistData(this.key_conversations, this.conversations);
@@ -171,10 +190,7 @@ export class AppComponent implements OnInit {
     this.isExpanded = !this.isExpanded;
   }
 
-  async GenerateAssistant() {
-
-    const assistantsClient = new AssistantsClient(this.config.endpoint!, new AzureKeyCredential(this.config.apiKey!));
-
+  getTools(): ToolDefinition[] {
     const imageGenerationTool: ToolDefinition = {
       type: 'function',
       function: {
@@ -192,20 +208,29 @@ export class AppComponent implements OnInit {
       }
     };
 
-    const tools = [];
-    if(!!this.config.imageApiKey){
+    const tools: ToolDefinition[] = [];
+    if (!!this.config.imageApiKey) {
       tools.push(imageGenerationTool);
     }
+
+    return tools;
+  }
+
+  async GenerateAssistant() {
+
+    const assistantsClient = new AssistantsClient(this.config.endpoint!, new AzureKeyCredential(this.config.apiKey!));
+
+
 
     const assistant = await assistantsClient.createAssistant({
       model: this.config.deployment!,
       name: 'MyAssistant',
       instructions: 'You are a general AI assistant. Use the provided functions to help respond to user queries.',
-      tools: tools
+      tools: this.getTools()
     });
 
     let runResponse = await assistantsClient.createThreadAndRun({
-      assistantId: assistant.id, thread: { messages: this.conversation.messages.map(m => ({ role: m.role!, content: m.content! })) }, tools: [imageGenerationTool]
+      assistantId: assistant.id, thread: { messages: this.conversation.messages.map(m => ({ role: m.role!, content: m.content! })) }, tools: this.getTools()
     });
 
     do {
@@ -236,7 +261,7 @@ export class AppComponent implements OnInit {
     }
     persistData(this.key_conversations, this.conversations);
     this.onSummarize();
-    this.isLoading = false;
+
     this.scrollBottom(1);
   }
 
