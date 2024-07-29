@@ -8,8 +8,7 @@
       <div class="modal-body">
         <div class="mb-3">
           <label for="deployment">Deployment</label>
-          <input type="text" class="form-control" id="deployment" [(ngModel)]="config().deployment"
-            placeholder="Deployment" />
+          <input type="text" class="form-control" id="deployment" [(ngModel)]="config().deployment" placeholder="Deployment" />
         </div>
         <div class="mb-3">
           <label for="apiKey">API Key</label>
@@ -17,13 +16,28 @@
         </div>
         <div class="mb-3">
           <label for="apiVersion">API Version</label>
-          <input type="text" class="form-control" id="apiVersion" [(ngModel)]="config().apiVersion"
-            placeholder="API Version" />
+          <input type="text" class="form-control" id="apiVersion" [(ngModel)]="config().apiVersion" placeholder="API Version" />
         </div>
         <div class="mb-3">
-          <label for="model">Endpoint</label>
-          <input type="text" class="form-control" id="endpoint" [(ngModel)]="config().endpoint"
-            placeholder="Endpoint" />
+          <label for="endpoint">Endpoint</label>
+          <input type="text" class="form-control" id="endpoint" [(ngModel)]="config().endpoint" placeholder="Endpoint" />
+        </div>
+      </div>
+      <div class="modal-header">
+        <h5 class="modal-title">Image Settings</h5>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label for="imageDeployment">DALL-E Deployment</label>
+          <input type="text" class="form-control" id="imageDeployment" [(ngModel)]="config().imageDeployment" placeholder="Image Deployment" />
+        </div>
+        <div class="mb-3">
+          <label for="imageApiKey">DALL-E API Key</label>
+          <input type="text" class="form-control" id="imageApiKey" [(ngModel)]="config().imageApiKey" placeholder="Image API Key" />
+        </div>
+        <div class="mb-3">
+          <label for="imageEndpoint">DALL-E Endpoint</label>
+          <input type="text" class="form-control" id="imageEndpoint" [(ngModel)]="config().imageEndpoint" placeholder="Image Endpoint" />
         </div>
       </div>
       <div class="modal-footer d-flex justify-content-between">

@@ -1,6 +1,6 @@
 import { DatePipe, JsonPipe } from '@angular/common';
-import { Component, computed, input, Input, OnInit } from '@angular/core';
-import { Conversation } from '../data/models';
+import { Component, computed, input, Input, OnInit, output } from '@angular/core';
+import { Conversation, Message } from '../data/models';
 import { MarkdownModule } from 'ngx-markdown';
 
 @Component({
@@ -15,9 +15,16 @@ export class ResponsesComponent implements OnInit {
   isLoading = input.required<boolean>();
   error = input.required<any>();
 
+  deleteMessage = output<Message>();
+
   numberOfMessages = computed(()=> this.conversation() ? this.conversation().messages?.length : 0);
 
   ngOnInit(): void {
 
+  }
+
+  onDelete(e:Event, message:Message) {
+    e.preventDefault();
+    this.deleteMessage.emit(message);
   }
 }

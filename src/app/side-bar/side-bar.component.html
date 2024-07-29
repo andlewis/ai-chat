@@ -27,8 +27,8 @@
         <div class="text-muted small-text">{{conversation.on | date : 'long' }}</div>
       </button>
 
-      <button class="btn btn-sm" title="settings">
-        <i class="bi-gear"></i>
+      <button class="btn btn-sm" title="settings" type="button" (click)="onDelete(conversation)">
+        <i class="bi-trash text-danger"></i>
       </button>
     </li>
     }

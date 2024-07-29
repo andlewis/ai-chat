@@ -13,6 +13,7 @@ import { SettingsModalComponent } from '../settings-modal/settings-modal.compone
 export class SideBarComponent {
   conversations = input.required<Conversation[]>();
   newConversation = output();
+  delete = output<Conversation>();
   config = input.required<Config>();
   select = output<Conversation>();
   toggleExpanded = output();
@@ -28,6 +29,9 @@ export class SideBarComponent {
     this.select.emit(conversation);
   }
 
+  onDelete(conversation:Conversation){
+    this.delete.emit(conversation);
+  }
 
   onCollapse(){
     this.toggleExpanded.emit();

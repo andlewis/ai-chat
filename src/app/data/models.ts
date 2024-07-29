@@ -1,10 +1,15 @@
 
 
 export class Config {
+    public apiVersion?: string;
+
     public apiKey?: string;
     public deployment?: string;
-    public apiVersion?: string;
     public endpoint?: string;
+    
+    public imageApiKey?:string;
+    public imageEndpoint?:string;
+    public imageDeployment?:string;
 }
 
 export class Conversation {

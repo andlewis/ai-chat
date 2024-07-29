@@ -1,11 +1,13 @@
 <div class="p-3 container-sm">
 
-    @for(messages of conversation()!.messages;track messages){
-    <span class="card card-body my-1 me-auto ms-auto border-1 radius-2 bg-light"
-        [class.border-0]="messages.role=='system'" [class.bg-light]="messages.role=='user'">
+    @for(message of conversation()!.messages;track message){
+    <span class="card card-body my-1 me-auto ms-auto border-1 radius-2 bg-light" [class.border-0]="message.role=='system'" [class.bg-light]="message.role=='user'">
         <div class="text-left">
-            <markdown [data]="messages.content"></markdown>
-            <div class="text-muted ms-auto small-text">{{messages.on | date : 'long' }}</div>
+            <markdown [data]="message.content"></markdown>
+            <div class="d-flex justify-content-start">
+                <div class="text-muted ms-auto small-text">{{message.on | date : 'long' }}</div>
+                <a class="small-text mx-1" href="#" (click)="onDelete($event,message)"><i class="bi-trash text-danger"></i></a>
+            </div>
         </div>
     </span>
     }
@@ -19,7 +21,7 @@
     }
 
     @if(error()){
-    <div class="alert bg-danger text-light my-1 me-auto ms-auto" >
+    <div class="alert bg-danger text-light my-1 me-auto ms-auto">
         {{error().message}}
     </div>
     }

@@ -10,7 +10,9 @@ import { ResponsesComponent } from './responses/responses.component';
 import { SideBarComponent } from './side-bar/side-bar.component';
 
 import { AzureOpenAI } from "openai";
-import { ChatCompletionCreateParamsNonStreaming, ChatCompletionUserMessageParam } from 'openai/resources/index.mjs';
+import { ChatCompletionCreateParamsNonStreaming, ChatCompletionUserMessageParam, ImageGenerateParams } from 'openai/resources/index.mjs';
+import { AssistantsClient, AzureKeyCredential, RequiredFunctionToolCall, ThreadMessage, ToolDefinition } from '@azure/openai-assistants';
+import { Thread } from 'openai/resources/beta/threads/threads.mjs';
 
 @Component({
   selector: 'app-root',
@@ -47,18 +49,13 @@ export class AppComponent implements OnInit {
       }
     });
     this.conversation = this.conversations[this.selectedIndex];
-    this.checkMobile();
+    this.isExpanded = !this.isMobile();
     this.scrollBottom();
   }
 
-  checkMobile() {
+  isMobile(): boolean {
     var ua = navigator.userAgent;
-
-    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i.test(ua))
-      this.isExpanded = false;
-
-    else
-      this.isExpanded = true;
+    return (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i.test(ua));
   }
 
   scrollBottom(timeout: number = 1000) {
@@ -68,7 +65,7 @@ export class AppComponent implements OnInit {
     }, timeout);
   }
 
-  onSend(text: string) {
+  async onSend(text: string) {
     this.conversation.messages.push({ content: text, role: 'user', on: new Date() });
     this.isLoading = true;
     this.scrollBottom(1);
@@ -77,12 +74,12 @@ export class AppComponent implements OnInit {
       model: this.config.deployment!
     };
 
-    this.backend(p);
-
-
+    //this.GenerateImage(text);
+    await this.GenerateAssistant();
+    //this.GetCompletion(p);
   }
 
-  backend(p: any) {
+  GetCompletion(p: any) {
     const client = new AzureOpenAI({ apiKey: this.config.apiKey, endpoint: this.config.endpoint, apiVersion: this.config.apiVersion, dangerouslyAllowBrowser: true });
 
     client.chat.completions.create(p).then((response) => {
@@ -94,7 +91,7 @@ export class AppComponent implements OnInit {
     }).catch((error) => {
       if (error.code == '429') {
         console.log('Retrying...');
-        setTimeout(() => this.backend(p), 5000);
+        setTimeout(() => this.GetCompletion(p), 5000);
       } else {
         this.error = error;
         this.isLoading = false;
@@ -112,16 +109,31 @@ export class AppComponent implements OnInit {
 
     const client = new AzureOpenAI({ apiKey: this.config.apiKey, endpoint: this.config.endpoint, apiVersion: this.config.apiVersion, dangerouslyAllowBrowser: true });
 
-    client.chat.completions.create(p).then((response) => {
+    client.chat.completions.create(p).then(response => {
       this.isLoading = false;
       this.conversation.title = response.choices[0].message.content ?? '';
       persistData(this.key_conversations, this.conversations);
-    }).catch((error) => {
+    }).catch(error => {
       if (error.code == '429') {
         console.log('Retrying Summary...');
         setTimeout(() => this.onSummarize(), 5000);
       }
     });
+  }
+
+  async GenerateImage(prompt: string): Promise<string> {
+    const p: ImageGenerateParams = {
+      prompt: prompt,
+      model: this.config.imageDeployment!
+    };
+
+    const client = new AzureOpenAI({ apiKey: this.config.imageApiKey, endpoint: this.config.imageEndpoint, apiVersion: this.config.apiVersion, dangerouslyAllowBrowser: true });
+
+    const response = await client.images.generate(p);
+
+    const content = `Here's an image I generated, based on this prompt: ${response.data[0].revised_prompt}\n\n<img src="${response.data[0].url}" class="img-fluid img-thumbnail" style="max-width:50%"/>`;
+
+    return content;
   }
 
   onSelect(conversation: Conversation) {
@@ -131,6 +143,22 @@ export class AppComponent implements OnInit {
     this.selectedIndex = this.conversations.indexOf(conversation);
     this.scrollBottom(100);
 
+  }
+
+  onDeleteConversation(conversation:Conversation){
+    const index = this.conversations.indexOf(conversation);
+    this.conversations.splice(index, 1);
+    if(this.selectedIndex === index){
+      this.selectedIndex = 0;
+      this.conversation = this.conversations[this.selectedIndex];
+    }
+    persistData(this.key_conversations, this.conversations);
+  }
+
+  onDeleteMessage(message: Message) { 
+    const index = this.conversation.messages.indexOf(message);
+    this.conversation.messages.splice(index, 1);
+    persistData(this.key_conversations, this.conversations);
   }
 
   onNew() {
@@ -143,6 +171,95 @@ export class AppComponent implements OnInit {
     this.isExpanded = !this.isExpanded;
   }
 
+  async GenerateAssistant() {
+
+    const assistantsClient = new AssistantsClient(this.config.endpoint!, new AzureKeyCredential(this.config.apiKey!));
+
+    const imageGenerationTool: ToolDefinition = {
+      type: 'function',
+      function: {
+        name: 'generateImage',
+        description: 'Generates an image and returns markdown containing the image prompt and url.',
+        parameters: {
+          type: 'object',
+          properties: {
+            prompt: {
+              type: 'string',
+              description: 'The prompt to generate the image from'
+            }
+          }
+        }
+      }
+    };
+
+    const tools = [];
+    if(!!this.config.imageApiKey){
+      tools.push(imageGenerationTool);
+    }
+
+    const assistant = await assistantsClient.createAssistant({
+      model: this.config.deployment!,
+      name: 'MyAssistant',
+      instructions: 'You are a general AI assistant. Use the provided functions to help respond to user queries.',
+      tools: tools
+    });
+
+    let runResponse = await assistantsClient.createThreadAndRun({
+      assistantId: assistant.id, thread: { messages: this.conversation.messages.map(m => ({ role: m.role!, content: m.content! })) }, tools: [imageGenerationTool]
+    });
+
+    do {
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      runResponse = await assistantsClient.getRun(runResponse.threadId, runResponse.id);
+      console.log('runResponse', runResponse);
+
+      if (runResponse.status === "requires_action" && runResponse.requiredAction!.type === "submit_tool_outputs") {
+        const toolOutputs = [];
+
+        for (const toolCall of runResponse.requiredAction!.submitToolOutputs!.toolCalls) {
+          toolOutputs.push(await this.getResolvedToolOutput(toolCall));
+        }
+        runResponse = await assistantsClient.submitToolOutputsToRun(runResponse.threadId, runResponse.id, toolOutputs);
+      }
+    } while (runResponse.status === "queued" || runResponse.status === "in_progress")
+
+    const runMessages = (await assistantsClient.listMessages(runResponse.threadId));
+    this.conversation.messages = [];
+    runMessages.data.forEach((x: ThreadMessage) => {
+      x.content.forEach((content: any) => {
+        console.log(content);
+        this.conversation.messages.unshift({ content: (x.content[0] as any).text.value, role: x.role, on: new Date(x.createdAt!) });
+      });
+    });
+    if (runResponse.status === 'failed') {
+      this.conversation.messages.push({ content: `I am sorry I'm unable to complete the request.\n` + runResponse.lastError?.message, role: 'assistant', on: new Date() });
+    }
+    persistData(this.key_conversations, this.conversations);
+    this.isLoading = false;
+    this.scrollBottom(1);
+  }
+
+  async getResolvedToolOutput(toolCall: RequiredFunctionToolCall) {
+    const toolOutput = { toolCallId: toolCall.id, output: '' };
+
+    if (toolCall["function"]) {
+      const functionCall = toolCall["function"];
+      const functionName = functionCall.name;
+      const functionArgs = JSON.parse(functionCall["arguments"] ?? {});
+
+      console.log('getResolvedToolOutput', functionName, functionArgs);
+
+      switch (functionName) {
+        case "generateImage":
+          toolOutput.output = await this.GenerateImage(functionArgs.prompt);
+          break;
+        default:
+          toolOutput.output = `Unknown function: ${functionName}`;
+          break;
+      }
+    }
+    return toolOutput;
+  }
 
 
 }
