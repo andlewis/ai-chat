@@ -3,8 +3,8 @@
     [conversations]="conversations" (toggleExpanded)="onToggleExpanded()" (select)="onSelect($event)"
     (newConversation)="onNew()"></app-side-bar>
   <div class="flex-column flex-grow-1 h-100 d-flex">
-    <app-header class="flex-column flex-grow-0" [conversation]="conversation" [config]="config"
-      [isExpanded]="isExpanded" (toggleExpanded)="onToggleExpanded()"></app-header>
+    <app-header class="flex-column flex-grow-0" [conversation]="conversation" [config]="config" (change)="onConfigChange($event)"
+      [isExpanded]="isExpanded" (toggleExpanded)="onToggleExpanded()" (clear)="onClear()"></app-header>
     <app-responses id="responses" class="flex-row flex-grow-1 overflow-auto" [conversation]="conversation"
       [isLoading]="isLoading" [error]="error" (deleteMessage)="onDeleteMessage($event)"></app-responses>
     <app-prompt class="flex-row flex-grow-0" (send)="onSend($event)"></app-prompt>

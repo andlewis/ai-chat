@@ -12,4 +12,4 @@
 </div>
 
 <app-settings-modal [isVisible]="isSettingsVisible" (hide)="isSettingsVisible = false"
-    [config]="config()"></app-settings-modal>
+    [config]="config()" (change)="onChange($event)" (clear)="onClear()"></app-settings-modal>

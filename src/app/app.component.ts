@@ -38,6 +38,18 @@ export class AppComponent implements OnInit {
 
 
   ngOnInit(): void {
+    this.load();
+    this.conversation = this.conversations[this.selectedIndex];
+    this.isExpanded = !this.isMobile();
+    this.scrollBottom();
+  }
+
+  isMobile(): boolean {
+    var ua = navigator.userAgent;
+    return (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i.test(ua));
+  }
+
+  load(){
     this.config = retrieveData(this.key_config) as Config ?? new Config();
     this.conversations = retrieveData(this.key_conversations) as Conversation[];
     if (!this.conversations || this.conversations.length === 0) {
@@ -49,14 +61,6 @@ export class AppComponent implements OnInit {
         element.messages = [];
       }
     });
-    this.conversation = this.conversations[this.selectedIndex];
-    this.isExpanded = !this.isMobile();
-    this.scrollBottom();
-  }
-
-  isMobile(): boolean {
-    var ua = navigator.userAgent;
-    return (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i.test(ua));
   }
 
   scrollBottom(timeout: number = 1000, resetLoading: boolean = false) {
@@ -76,7 +80,7 @@ export class AppComponent implements OnInit {
     const p: ChatCompletionCreateParamsNonStreaming = {
       messages: this.conversation.messages.map(m => ({ role: m.role, content: m.content } as ChatCompletionUserMessageParam)),
       model: this.config.deployment!,
-      tools: this.getTools().map((t: any) => ({ function: t.function, type: 'function' }))
+      tools: this.getTools()?.map((t: any) => ({ function: t.function, type: 'function' }))
     };
 
     ////this.GenerateImage(text);
@@ -124,7 +128,7 @@ export class AppComponent implements OnInit {
     const p: ChatCompletionCreateParamsNonStreaming = {
       messages: [{ role: 'user', content: 'summarize the following conversation in one concise phrase of no more than 7 words: \n' + c } as ChatCompletionUserMessageParam],
       model: this.config.deployment!,
-      tools: this.getTools().map((t: any) => ({ function: t.function, type: 'function' }))
+      tools: this.getTools()?.map((t: any) => ({ function: t.function, type: 'function' }))
     };
 
     const client = new AzureOpenAI({ apiKey: this.config.apiKey, endpoint: this.config.endpoint, apiVersion: this.config.apiVersion, dangerouslyAllowBrowser: true });
@@ -138,6 +142,13 @@ export class AppComponent implements OnInit {
         setTimeout(() => this.onSummarize(), 5000);
       }
     });
+  }
+
+  onClear(){
+    persistData(this.key_conversations, []);
+    persistData(this.key_config, new Config());
+    this.load();
+    this.conversation = this.conversations[this.selectedIndex];
   }
 
   async GenerateImage(prompt: string): Promise<string> {
@@ -190,7 +201,11 @@ export class AppComponent implements OnInit {
     this.isExpanded = !this.isExpanded;
   }
 
-  getTools(): ToolDefinition[] {
+  onConfigChange(config: Config) {
+    //this.config = config;
+  }
+
+  getTools(): ToolDefinition[] | undefined {
     const imageGenerationTool: ToolDefinition = {
       type: 'function',
       function: {
@@ -211,9 +226,10 @@ export class AppComponent implements OnInit {
     const tools: ToolDefinition[] = [];
     if (!!this.config.imageApiKey) {
       tools.push(imageGenerationTool);
+      return tools;
     }
 
-    return tools;
+    return undefined;
   }
 
   async GenerateAssistant() {

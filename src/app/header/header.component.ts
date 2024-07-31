@@ -13,6 +13,8 @@ export class HeaderComponent {
   conversation = input.required<Conversation>();
   config = input.required<Config>();
   isExpanded = input.required<boolean>();
+  change = output<Config>();
+  clear = output();
   toggleExpanded = output();
   isSettingsVisible = false;
 
@@ -23,5 +25,13 @@ export class HeaderComponent {
 
   onSettings() {
     this.isSettingsVisible = true;
+  }
+
+  onChange(config: Config) {
+    this.change.emit(config);
+  }
+
+  onClear(){
+    this.clear.emit();
   }
 }

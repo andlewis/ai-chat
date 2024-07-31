@@ -14,14 +14,16 @@ export class SettingsModalComponent {
   isVisible = input.required<boolean>();
   config = input.required<Config>();
   hide = output();
-  change = output<Config>();
+  clear = output();
+  change = output<Config>();  
 
   onHide() {
     this.hide.emit();
   }
 
   onDelete() {
-
+    this.clear.emit();
+    this.hide.emit();
   }
 
   onSave() {
@@ -37,8 +39,13 @@ export class SettingsModalComponent {
   onLoad(){
     navigator.clipboard.readText().then(text => {
       const o:Config = JSON.parse(text) as Config;
-      persistData('config', o);
-      this.change.emit(o);
+      this.config().apiKey = o.apiKey;
+      this.config().apiVersion = o.apiVersion;
+      this.config().deployment = o.deployment;
+      this.config().endpoint = o.endpoint;
+      this.config().imageApiKey = o.imageApiKey;
+      this.config().imageDeployment = o.imageDeployment;
+      this.config().imageEndpoint = o.imageEndpoint;
     });
   }
 }
