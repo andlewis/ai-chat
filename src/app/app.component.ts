@@ -52,7 +52,6 @@ export class AppComponent implements OnInit {
     this.config = retrieveData(this.key_config) as Config ?? new Config();
     this.conversations = retrieveData(this.key_conversations) as Conversation[];
     if (!this.conversations || this.conversations.length === 0) {
-      console.log(this.conversations);
       this.conversations = addSampleData();
     }
     this.conversations.forEach(element => {
@@ -99,7 +98,6 @@ export class AppComponent implements OnInit {
     const client = new AzureOpenAI({ apiKey: this.config.apiKey, endpoint: this.config.endpoint, apiVersion: this.config.apiVersion, dangerouslyAllowBrowser: true });
 
     client.chat.completions.create(p).then((response) => {
-      console.log('response', response);
       if (response.choices[0].finish_reason === 'tool_calls') {
         response.choices[0].message!.tool_calls!.forEach(async (toolCall: any) => {
           const content = await this.getResolvedToolOutput(toolCall);
@@ -115,7 +113,6 @@ export class AppComponent implements OnInit {
       this.conversations[this.selectedIndex] = this.conversation!;
     }).catch((error) => {
       if (error.code == '429') {
-        console.log('Retrying...');
         setTimeout(() => this.GetCompletion(p), 5000);
       } else {
         this.error = error;
@@ -140,7 +137,6 @@ export class AppComponent implements OnInit {
       persistData(this.key_conversations, this.conversations);
     }).catch(error => {
       if (error.code == '429') {
-        console.log('Retrying Summary...');
         setTimeout(() => this.onSummarize(), 5000);
       }
     });
@@ -254,7 +250,6 @@ export class AppComponent implements OnInit {
     do {
       await new Promise((resolve) => setTimeout(resolve, 500));
       runResponse = await assistantsClient.getRun(runResponse.threadId, runResponse.id);
-      console.log('runResponse', runResponse);
 
       if (runResponse.status === "requires_action" && runResponse.requiredAction!.type === "submit_tool_outputs") {
         const toolOutputs = [];
@@ -270,7 +265,6 @@ export class AppComponent implements OnInit {
     this.conversation.messages = [];
     runMessages.data.forEach((x: ThreadMessage) => {
       x.content.forEach((content: any) => {
-        console.log(content);
         this.conversation.messages.unshift({ content: (x.content[0] as any).text.value, role: x.role, on: new Date(x.createdAt!) });
       });
     });
@@ -290,9 +284,6 @@ export class AppComponent implements OnInit {
       const functionCall = toolCall["function"];
       const functionName = functionCall.name;
       const functionArgs = JSON.parse(functionCall["arguments"] ?? {});
-
-      console.log('getResolvedToolOutput', functionName, functionArgs);
-
       switch (functionName) {
         case "generateImage":
           toolOutput.output = await this.GenerateImage(functionArgs.prompt);

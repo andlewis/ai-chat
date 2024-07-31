@@ -1,15 +1,15 @@
 <div class="d-flex justify-content-between small py-1 text-muted w-100">
     <div>
         @if(!isExpanded()){
-        <button type="button" class="btn" title="Expand/Collapse" (click)="onToggleExapanded()"><i
-                class="bi-chevron-double-right"></i></button>
+        <button type="button" class="btn" title="Expand/Collapse" (click)="onToggleExapanded()"><i class="bi-chevron-double-right"></i></button>
         }
     </div>
-    <h3>{{conversation()?.title}}</h3>
-            <button class="btn btn-sm" type="button" (click)="onSettings()" title="settings">
-                <i class="bi-gear"></i>
-            </button>
+    @if(conversation()){
+    <h3>{{conversation().title}}</h3>
+    }
+    <button class="btn btn-sm" type="button" (click)="onSettings()" title="settings">
+        <i class="bi-gear"></i>
+    </button>
 </div>
 
-<app-settings-modal [isVisible]="isSettingsVisible" (hide)="isSettingsVisible = false"
-    [config]="config()" (change)="onChange($event)" (clear)="onClear()"></app-settings-modal>
+<app-settings-modal [isVisible]="isSettingsVisible" (hide)="isSettingsVisible = false" [config]="config()" (change)="onChange($event)" (clear)="onClear()"></app-settings-modal>
