@@ -37,9 +37,9 @@ export class AppComponent implements OnInit {
 
 
   ngOnInit(): void {
+    this.isExpanded = !this.isMobile();
     this.load();
     this.conversation = this.conversations[this.selectedIndex];
-    this.isExpanded = !this.isMobile();
     this.scrollBottom();
   }
 
@@ -51,8 +51,12 @@ export class AppComponent implements OnInit {
   load() {
     this.config = retrieveData(this.key_config) as Config ?? new Config();
     this.conversations = retrieveData(this.key_conversations) as Conversation[];
+    if (!this.conversations || this.conversations.length == 0) {
+      this.isExpanded = false;
+    }
+
     if (!this.conversations || this.conversations.length === 0) {
-      this.conversations = addSampleData();
+      //this.conversations = addSampleData();
     }
     this.conversations.forEach(element => {
       if (!element.messages) {
@@ -64,7 +68,9 @@ export class AppComponent implements OnInit {
   scrollBottom(timeout: number = 1000, resetLoading: boolean = false) {
     setTimeout(() => {
       const responses = document.getElementById(this.key_responses_id);
-      responses!.scrollTop = responses!.scrollHeight;
+      if (responses) {
+        responses!.scrollTop = responses!.scrollHeight;
+      }
       if (resetLoading) {
         this.isLoading = false;
       }
@@ -72,7 +78,7 @@ export class AppComponent implements OnInit {
   }
 
   async onSend(text: string) {
-    if(!this.conversation){
+    if (!this.conversation) {
       this.onNew();
     }
     this.conversation.messages.push({ content: text, role: 'user', on: new Date() });
