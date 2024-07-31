@@ -9,16 +9,15 @@ import { PromptComponent } from './prompt/prompt.component';
 import { ResponsesComponent } from './responses/responses.component';
 import { SideBarComponent } from './side-bar/side-bar.component';
 
-import { AzureOpenAI } from "openai";
-import { ChatCompletionCreateParamsNonStreaming, ChatCompletionTool, ChatCompletionUserMessageParam, ImageGenerateParams } from 'openai/resources/index.mjs';
 import { AssistantsClient, AzureKeyCredential, RequiredFunctionToolCall, ThreadMessage, ToolDefinition } from '@azure/openai-assistants';
-import { Thread } from 'openai/resources/beta/threads/threads.mjs';
-import { RequestOptions } from 'openai/core.mjs';
+import { AzureOpenAI } from "openai";
+import { ChatCompletionCreateParamsNonStreaming, ChatCompletionUserMessageParam, ImageGenerateParams } from 'openai/resources/index.mjs';
+import { WelcomeComponent } from './welcome/welcome.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, SideBarComponent, HeaderComponent, FooterComponent, PromptComponent, ResponsesComponent, JsonPipe],
+  imports: [RouterOutlet, SideBarComponent, HeaderComponent, FooterComponent, PromptComponent, ResponsesComponent, JsonPipe, WelcomeComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
@@ -49,7 +48,7 @@ export class AppComponent implements OnInit {
     return (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i.test(ua));
   }
 
-  load(){
+  load() {
     this.config = retrieveData(this.key_config) as Config ?? new Config();
     this.conversations = retrieveData(this.key_conversations) as Conversation[];
     if (!this.conversations || this.conversations.length === 0) {
@@ -74,6 +73,9 @@ export class AppComponent implements OnInit {
   }
 
   async onSend(text: string) {
+    if(!this.conversation){
+      this.onNew();
+    }
     this.conversation.messages.push({ content: text, role: 'user', on: new Date() });
     this.isLoading = true;
     this.scrollBottom(1, false);
@@ -144,7 +146,7 @@ export class AppComponent implements OnInit {
     });
   }
 
-  onClear(){
+  onClear() {
     persistData(this.key_conversations, []);
     persistData(this.key_config, new Config());
     this.load();
