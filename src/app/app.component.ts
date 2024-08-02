@@ -56,6 +56,7 @@ export class AppComponent implements OnInit {
     }
 
     if (!this.conversations || this.conversations.length === 0) {
+      this.conversations = [];
       //this.conversations = addSampleData();
     }
     this.conversations.forEach(element => {
