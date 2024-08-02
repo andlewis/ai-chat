@@ -117,6 +117,7 @@ export class AppComponent implements OnInit {
         this.conversation.messages!.push({ content: response.choices[0].message.content ?? '', role: 'assistant', on: new Date() });
         persistData(this.key_conversations, this.conversations);
         this.scrollBottom(100, true);
+        this.error = null;
       }
       this.conversations[this.selectedIndex] = this.conversation!;
     }).catch((error) => {
