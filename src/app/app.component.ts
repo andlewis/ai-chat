@@ -165,7 +165,7 @@ export class AppComponent implements OnInit {
 
     const response = await client.images.generate(p);
 
-    const content = `Here's an image I generated, based on this prompt: ${response.data[0].revised_prompt}\n\n<img src="${response.data[0].url}" class="img-fluid img-thumbnail" style="max-width:50%"/>`;
+    const content = `Here's an image I generated. Please remember that images are only kept for 24 hours, so if you want to keep it, save it locally. I also updated your prompt to this: ${response.data[0].revised_prompt}\n\n<img src="${response.data[0].url}" class="img-fluid img-thumbnail" style="max-width:50%"/>`;
 
     return content;
   }
