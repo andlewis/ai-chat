@@ -98,6 +98,7 @@ export class AppComponent implements OnInit {
 
     persistData(this.key_conversations, this.conversations);
     setTimeout(() => this.onSummarize(), 9000);
+    this.scrollBottom(5000);
   }
 
   GetCompletion(p: any) {
