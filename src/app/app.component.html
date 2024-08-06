@@ -8,7 +8,7 @@
     @if(conversation && conversation.messages.length > 0){
     <app-responses id="responses" class="flex-row flex-grow-1 overflow-auto" [conversation]="conversation" [isLoading]="isLoading" [error]="error" (deleteMessage)="onDeleteMessage($event)"></app-responses>
     }
-    <app-prompt class="flex-row flex-grow-0" (send)="onSend($event)"></app-prompt>
+    <app-prompt class="flex-row flex-grow-0" (send)="onSend($event)" [config]="config"></app-prompt>
     <app-footer class="flex-row flex-grow-0"></app-footer>
   </div>
 </div>

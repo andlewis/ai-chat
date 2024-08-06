@@ -1,6 +1,15 @@
 <div class="card card-body border-0 pb-1">
+    <div class="alert bg-danger text-light fixed-width d-flex justify-content-between ms-auto me-auto p-1 w-100">
+        <small>You are missing the deployment, API Key, API Version, and Endpoint configuration. Please use the gear icon at the top right of the screen to configure.</small>
+        <button type="button" class="btn-close text-light" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+   
+    <div class="alert bg-danger text-light fixed-width d-flex justify-content-between ms-auto me-auto p-1 w-100">
+        <small>You are missing the DALL-E deployment, API Key, and Endpoint configuration. You will not be able to generate images.</small>
+        <button type="button" class="btn-close text-light" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
 
-    <div class="input-group">
+    <div class="input-group fixed-width ms-auto me-auto">
         <textarea [(ngModel)]="text" class="form-control custom-control bg-light" 
             (keyup)="onKeyUp($event)"
             rows="2" placeholder="Message the AI" aria-label="Message the AI" aria-describedby="submit-button"></textarea>

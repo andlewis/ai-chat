@@ -1,5 +1,6 @@
-import { Component, EventEmitter, output, Output } from '@angular/core';
+import { Component, EventEmitter, input, output, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Config } from '../data/models';
 
 @Component({
   selector: 'app-prompt',
@@ -9,6 +10,7 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './prompt.component.scss'
 })
 export class PromptComponent {
+  config = input.required<Config>();
   send = output<string>();
 
   text:string = '';
