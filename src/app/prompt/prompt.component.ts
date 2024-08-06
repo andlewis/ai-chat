@@ -13,15 +13,23 @@ export class PromptComponent {
   config = input.required<Config>();
   send = output<string>();
 
-  text:string = '';
+  text: string = '';
 
-  onClickSend(){
+  validChatConfig(): boolean {
+    return !!this.config().deployment && !!this.config().apiKey && !!this.config().apiVersion && !!this.config().endpoint;
+  }
+
+  validImageConfig(): boolean {
+    return !!this.config().imageDeployment && !!this.config().imageApiKey && !!this.config().imageEndpoint;
+  }
+
+  onClickSend() {
     this.send.emit(this.text);
     this.text = '';
   }
 
-  onKeyUp(event: KeyboardEvent){
-    if(event.key === 'Enter')
+  onKeyUp(event: KeyboardEvent) {
+    if (event.key === 'Enter')
       this.onClickSend();
   }
 }
