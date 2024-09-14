@@ -143,6 +143,9 @@ export class AppComponent implements OnInit {
 
     client.chat.completions.create(p).then(response => {
       this.conversation.title = response.choices[0].message.content ?? '';
+      if(this.conversation.title.length > 200){ 
+        this.conversation.title = this.conversation.title.substring(0, 200) + '...';
+      }
       persistData(this.key_conversations, this.conversations);
     }).catch(error => {
       if (error.code == '429') {
