@@ -18,6 +18,14 @@ export class HeaderComponent {
   toggleExpanded = output();
   isSettingsVisible = false;
 
+  get title():string{
+    let t = this.conversation().title ?? '';
+    if(t.length > 200){
+      t = t.substring(0, 200) + '...';
+    }
+    return t;
+  }
+
   onToggleExapanded(){
     this.toggleExpanded.emit();
   }
