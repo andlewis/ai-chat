@@ -11,6 +11,7 @@ import { Config } from '../data/models';
 })
 export class PromptComponent {
   config = input.required<Config>();
+  isDarkMode = input.required<boolean>();
   send = output<string>();
 
   text: string = '';

@@ -17,12 +17,14 @@ export class SideBarComponent {
   config = input.required<Config>();
   select = output<Conversation>();
   toggleExpanded = output();
+  toggleDarkMode = output();
 
 
   isExpanded = input.required<boolean>();
 
   onNew() {
     this.newConversation.emit();
+    this.toggleExpanded.emit();
   }
 
   onSelect(conversation: Conversation) {
@@ -35,6 +37,10 @@ export class SideBarComponent {
 
   onCollapse(){
     this.toggleExpanded.emit();
+  }
+
+  onToggleDarkMode(){
+    this.toggleDarkMode.emit();
   }
 
 }

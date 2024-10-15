@@ -30,6 +30,7 @@ export class AppComponent implements OnInit {
   error: any = null;
   isLoading = false;
   isExpanded = false;
+  isDarkMode = true;
 
   key_conversations = 'conversations';
   key_config = 'config';
@@ -49,6 +50,8 @@ export class AppComponent implements OnInit {
   }
 
   load() {
+    this.isDarkMode = localStorage.getItem('theme') === 'dark';
+    this.setTheme();
     this.config = retrieveData(this.key_config) as Config ?? new Config();
     this.conversations = retrieveData(this.key_conversations) as Conversation[];
     if (!this.conversations || this.conversations.length == 0) {
@@ -76,6 +79,19 @@ export class AppComponent implements OnInit {
         this.isLoading = false;
       }
     }, timeout);
+  }
+
+  onToggleDarkMode() {
+    this.isDarkMode = !this.isDarkMode;
+  
+    this.setTheme();
+    
+  }
+
+  setTheme(){
+    let theme = this.isDarkMode ? 'dark' :'light'
+    document.documentElement.setAttribute('data-bs-theme', theme);
+    localStorage.setItem('theme', theme);
   }
 
   async onSend(text: string) {

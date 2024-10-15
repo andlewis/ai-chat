@@ -13,7 +13,10 @@
     }
 
     <div class="input-group ms-auto me-auto">
-        <textarea [(ngModel)]="text" class="form-control custom-control bg-light" (keyup)="onKeyUp($event)" rows="2" placeholder="Message the AI" aria-label="Message the AI" aria-describedby="submit-button"></textarea>
+        <textarea [(ngModel)]="text"
+           
+
+         class="form-control custom-control" (keyup)="onKeyUp($event)" rows="2" placeholder="Message the AI" aria-label="Message the AI" aria-describedby="submit-button"></textarea>
         <button class="btn btn-outline-secondary" type="button" id="submit-button" (click)="onClickSend()">
             <i class="bi-arrow-up-short"></i>
         </button>
