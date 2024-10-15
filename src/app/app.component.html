@@ -9,7 +9,7 @@
     <app-welcome id="welcome" class="flex-row flex-grow-q overflow-auto"></app-welcome>
     }
     @if(conversation && conversation.messages.length > 0){
-    <app-responses id="responses" class="flex-row flex-grow-1 overflow-auto" [conversation]="conversation" [isLoading]="isLoading" [error]="error" (deleteMessage)="onDeleteMessage($event)"></app-responses>
+    <app-responses id="responses" class="flex-row flex-grow-1 overflow-auto" [conversation]="conversation" [isLoading]="isLoading" [isDarkMode]="isDarkMode" [error]="error" (deleteMessage)="onDeleteMessage($event)"></app-responses>
     }
     <app-prompt class="flex-row flex-grow-0" (send)="onSend($event)" [config]="config" [isDarkMode]="isDarkMode"></app-prompt>
     <app-footer class="flex-row flex-grow-0" [isDarkMode]="isDarkMode"></app-footer>

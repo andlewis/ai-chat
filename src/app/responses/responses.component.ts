@@ -13,6 +13,7 @@ import { MarkdownModule } from 'ngx-markdown';
 export class ResponsesComponent implements OnInit {
   conversation = input.required<Conversation>();
   isLoading = input.required<boolean>();
+  isDarkMode = input.required<boolean>();
   error = input.required<any>();
 
   deleteMessage = output<Message>();
