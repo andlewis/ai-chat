@@ -29,6 +29,7 @@ export class SideBarComponent {
 
   onSelect(conversation: Conversation) {
     this.select.emit(conversation);
+    this.toggleExpanded.emit();
   }
 
   onDelete(conversation:Conversation){
