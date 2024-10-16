@@ -1,13 +1,13 @@
 <div class="d-flex justify-content-between small py-1 text-muted w-100">
     <div>
         @if(!isExpanded()){
-        <button type="button" class="btn" title="Expand/Collapse" (click)="onToggleExapanded()"><i class="bi-chevron-double-right"></i></button>
+        <button type="button" class="btn d-print-none" title="Expand/Collapse" (click)="onToggleExapanded()"><i class="bi-chevron-double-right"></i></button>
         }
     </div>
     @if(conversation()){
     <h3>{{title}}</h3>
     }
-    <button class="btn btn-sm" type="button" (click)="onSettings()" title="settings">
+    <button class="btn btn-sm d-print-none" type="button" (click)="onSettings()" title="settings">
         <i class="bi-gear"></i>
     </button>
 </div>

@@ -1,5 +1,5 @@
 <div class="d-flex vh-100">
-  <app-side-bar class="flex-column flex-shrink-0" [isExpanded]="isExpanded" [config]="config" 
+  <app-side-bar class="flex-column flex-shrink-0 d-print-none" [isExpanded]="isExpanded" [config]="config" 
   (delete)="onDeleteConversation($event)" [conversations]="conversations" (toggleExpanded)="onToggleExpanded()" (select)="onSelect($event)" (newConversation)="onNew()"
   (toggleDarkMode)="onToggleDarkMode()"
   ></app-side-bar>
@@ -11,7 +11,7 @@
     @if(conversation && conversation.messages.length > 0){
     <app-responses id="responses" class="flex-row flex-grow-1 overflow-auto" [conversation]="conversation" [isLoading]="isLoading" [isDarkMode]="isDarkMode" [error]="error" (deleteMessage)="onDeleteMessage($event)"></app-responses>
     }
-    <app-prompt class="flex-row flex-grow-0" (send)="onSend($event)" [config]="config" [isDarkMode]="isDarkMode"></app-prompt>
-    <app-footer class="flex-row flex-grow-0" [isDarkMode]="isDarkMode"></app-footer>
+    <app-prompt class="flex-row flex-grow-0 d-print-none" (send)="onSend($event)" [config]="config" [isDarkMode]="isDarkMode"></app-prompt>
+    <app-footer class="flex-row flex-grow-0 d-print-none" [isDarkMode]="isDarkMode"></app-footer>
   </div>
 </div>
