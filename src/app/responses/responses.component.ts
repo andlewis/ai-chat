@@ -28,4 +28,9 @@ export class ResponsesComponent implements OnInit {
     e.preventDefault();
     this.deleteMessage.emit(message);
   }
+
+  onCopy(e:Event, message:Message) {
+    e.preventDefault();
+    navigator.clipboard.writeText(message.content ?? '');
+  }
 }
