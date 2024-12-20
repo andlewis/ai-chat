@@ -4,11 +4,10 @@ import { persistData } from '../data/context';
 import { Config } from '../data/models';
 
 @Component({
-  selector: 'app-settings-modal',
-  standalone: true,
-  imports: [FormsModule],
-  templateUrl: './settings-modal.component.html',
-  styleUrl: './settings-modal.component.scss'
+    selector: 'app-settings-modal',
+    imports: [FormsModule],
+    templateUrl: './settings-modal.component.html',
+    styleUrl: './settings-modal.component.scss'
 })
 export class SettingsModalComponent {
   isVisible = input.required<boolean>();

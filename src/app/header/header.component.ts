@@ -3,11 +3,10 @@ import { Config, Conversation } from '../data/models';
 import { SettingsModalComponent } from '../settings-modal/settings-modal.component';
 
 @Component({
-  selector: 'app-header',
-  standalone: true,
-  imports: [SettingsModalComponent],
-  templateUrl: './header.component.html',
-  styleUrl: './header.component.scss'
+    selector: 'app-header',
+    imports: [SettingsModalComponent],
+    templateUrl: './header.component.html',
+    styleUrl: './header.component.scss'
 })
 export class HeaderComponent {
   conversation = input.required<Conversation>();

@@ -4,11 +4,10 @@ import { Conversation, Message } from '../data/models';
 import { MarkdownModule } from 'ngx-markdown';
 
 @Component({
-  selector: 'app-responses',
-  standalone: true,
-  imports: [DatePipe, MarkdownModule, JsonPipe],
-  templateUrl: './responses.component.html',
-  styleUrl: './responses.component.scss'
+    selector: 'app-responses',
+    imports: [DatePipe, MarkdownModule, JsonPipe],
+    templateUrl: './responses.component.html',
+    styleUrl: './responses.component.scss'
 })
 export class ResponsesComponent implements OnInit {
   conversation = input.required<Conversation>();

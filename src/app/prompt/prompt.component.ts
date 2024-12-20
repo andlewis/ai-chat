@@ -3,11 +3,10 @@ import { FormsModule } from '@angular/forms';
 import { Config } from '../data/models';
 
 @Component({
-  selector: 'app-prompt',
-  standalone: true,
-  imports: [FormsModule],
-  templateUrl: './prompt.component.html',
-  styleUrl: './prompt.component.scss'
+    selector: 'app-prompt',
+    imports: [FormsModule],
+    templateUrl: './prompt.component.html',
+    styleUrl: './prompt.component.scss'
 })
 export class PromptComponent {
   config = input.required<Config>();

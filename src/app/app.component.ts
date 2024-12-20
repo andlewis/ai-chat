@@ -15,11 +15,10 @@ import { ChatCompletionCreateParamsNonStreaming, ChatCompletionUserMessageParam,
 import { WelcomeComponent } from './welcome/welcome.component';
 
 @Component({
-  selector: 'app-root',
-  standalone: true,
-  imports: [RouterOutlet, SideBarComponent, HeaderComponent, FooterComponent, PromptComponent, ResponsesComponent, JsonPipe, WelcomeComponent],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+    selector: 'app-root',
+    imports: [RouterOutlet, SideBarComponent, HeaderComponent, FooterComponent, PromptComponent, ResponsesComponent, JsonPipe, WelcomeComponent],
+    templateUrl: './app.component.html',
+    styleUrl: './app.component.scss'
 })
 export class AppComponent implements OnInit {
   title = 'ai-chat';
