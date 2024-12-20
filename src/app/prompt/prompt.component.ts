@@ -13,6 +13,7 @@ export class PromptComponent {
   isDarkMode = input.required<boolean>();
   send = output<string>();
   isListening = false;
+  isAudioEnabled = false;
   text: string = '';
   recorder: any;
 

@@ -15,11 +15,7 @@
     }
 
     <div class="input-group ms-auto me-auto">
-        <textarea [(ngModel)]="text" class="form-control custom-control" (keyup)="onKeyUp($event)" rows="2"
-            placeholder="Message the AI" aria-label="Message the AI" aria-describedby="submit-button"></textarea>
-        <button class="btn btn-outline-secondary" type="button" id="submit-button" (click)="onClickSend()">
-            <i class="bi-arrow-up-short"></i>
-        </button>
+        @if(isAudioEnabled){
         <button class="btn" [class.btn-outline-secondary]="!isListening" [class.btn-primary]="isListening" type="button"
             id="submit-button" (click)="onClickMicrophone()">
             @if(!isListening){
@@ -29,5 +25,12 @@
             <i class="bi-mic"></i>
             }
         </button>
+        }
+        <textarea [(ngModel)]="text" class="form-control custom-control" (keyup)="onKeyUp($event)" rows="2"
+            placeholder="Message the AI" aria-label="Message the AI" aria-describedby="submit-button"></textarea>
+        <button class="btn btn-outline-secondary" type="button" id="submit-button" (click)="onClickSend()">
+            <i class="bi-arrow-up-short"></i>
+        </button>
+
     </div>
 </div>
