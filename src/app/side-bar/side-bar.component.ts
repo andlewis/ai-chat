@@ -1,13 +1,12 @@
+import { DatePipe } from '@angular/common';
 import { Component, input, output } from '@angular/core';
 import { Config, Conversation } from '../data/models';
-import { DatePipe } from '@angular/common';
-import { SettingsModalComponent } from '../settings-modal/settings-modal.component';
 
 @Component({
-    selector: 'app-side-bar',
-    imports: [DatePipe, SettingsModalComponent],
-    templateUrl: './side-bar.component.html',
-    styleUrl: './side-bar.component.scss'
+  selector: 'app-side-bar',
+  imports: [DatePipe],
+  templateUrl: './side-bar.component.html',
+  styleUrl: './side-bar.component.scss'
 })
 export class SideBarComponent {
   conversations = input.required<Conversation[]>();
@@ -31,15 +30,15 @@ export class SideBarComponent {
     this.toggleExpanded.emit();
   }
 
-  onDelete(conversation:Conversation){
+  onDelete(conversation: Conversation) {
     this.delete.emit(conversation);
   }
 
-  onCollapse(){
+  onCollapse() {
     this.toggleExpanded.emit();
   }
 
-  onToggleDarkMode(){
+  onToggleDarkMode() {
     this.toggleDarkMode.emit();
   }
 

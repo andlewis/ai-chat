@@ -1,7 +1,5 @@
-import { JsonPipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { addSampleData, persistData, retrienveData as retrieveData } from './data/context';
+import { persistData, retrienveData as retrieveData } from './data/context';
 import { Config, Conversation, Message } from './data/models';
 import { FooterComponent } from './footer/footer.component';
 import { HeaderComponent } from './header/header.component';
@@ -15,10 +13,10 @@ import { ChatCompletionCreateParamsNonStreaming, ChatCompletionUserMessageParam,
 import { WelcomeComponent } from './welcome/welcome.component';
 
 @Component({
-    selector: 'app-root',
-    imports: [RouterOutlet, SideBarComponent, HeaderComponent, FooterComponent, PromptComponent, ResponsesComponent, JsonPipe, WelcomeComponent],
-    templateUrl: './app.component.html',
-    styleUrl: './app.component.scss'
+  selector: 'app-root',
+  imports: [SideBarComponent, HeaderComponent, FooterComponent, PromptComponent, ResponsesComponent, WelcomeComponent],
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.scss'
 })
 export class AppComponent implements OnInit {
   title = 'ai-chat';
@@ -82,13 +80,13 @@ export class AppComponent implements OnInit {
 
   onToggleDarkMode() {
     this.isDarkMode = !this.isDarkMode;
-  
+
     this.setTheme();
-    
+
   }
 
-  setTheme(){
-    let theme = this.isDarkMode ? 'dark' :'light'
+  setTheme() {
+    let theme = this.isDarkMode ? 'dark' : 'light'
     document.documentElement.setAttribute('data-bs-theme', theme);
     localStorage.setItem('theme', theme);
   }
@@ -158,7 +156,7 @@ export class AppComponent implements OnInit {
 
     client.chat.completions.create(p).then(response => {
       this.conversation.title = response.choices[0].message.content ?? '';
-      if(this.conversation.title.length > 200){ 
+      if (this.conversation.title.length > 200) {
         this.conversation.title = this.conversation.title.substring(0, 200) + '...';
       }
       persistData(this.key_conversations, this.conversations);

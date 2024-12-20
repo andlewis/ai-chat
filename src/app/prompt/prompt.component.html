@@ -1,24 +1,33 @@
 <div class="card card-body border-0 pb-1">
     @if(!validChatConfig){
     <div class="alert bg-danger text-light fixed-width d-flex justify-content-between ms-auto me-auto p-1 w-100">
-        <small>You are missing the deployment, API Key, API Version, or Endpoint configuration. Please use the gear icon at the top right of the screen to configure.</small>
+        <small>You are missing the deployment, API Key, API Version, or Endpoint configuration. Please use the gear icon
+            at the top right of the screen to configure.</small>
         <button type="button" class="btn-close text-light" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
     }
     @if(!validImageConfig){
     <div class="alert bg-danger text-light fixed-width d-flex justify-content-between ms-auto me-auto p-1 w-100">
-        <small>You are missing the DALL-E deployment, API Key, or Endpoint configuration. You will not be able to generate images.</small>
+        <small>You are missing the DALL-E deployment, API Key, or Endpoint configuration. You will not be able to
+            generate images.</small>
         <button type="button" class="btn-close text-light" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
     }
 
     <div class="input-group ms-auto me-auto">
-        <textarea [(ngModel)]="text"
-           
-
-         class="form-control custom-control" (keyup)="onKeyUp($event)" rows="2" placeholder="Message the AI" aria-label="Message the AI" aria-describedby="submit-button"></textarea>
+        <textarea [(ngModel)]="text" class="form-control custom-control" (keyup)="onKeyUp($event)" rows="2"
+            placeholder="Message the AI" aria-label="Message the AI" aria-describedby="submit-button"></textarea>
         <button class="btn btn-outline-secondary" type="button" id="submit-button" (click)="onClickSend()">
             <i class="bi-arrow-up-short"></i>
+        </button>
+        <button class="btn" [class.btn-outline-secondary]="!isListening" [class.btn-primary]="isListening" type="button"
+            id="submit-button" (click)="onClickMicrophone()">
+            @if(!isListening){
+            <i class="bi-mic-mute"></i>
+            }
+            @if(isListening){
+            <i class="bi-mic"></i>
+            }
         </button>
     </div>
 </div>

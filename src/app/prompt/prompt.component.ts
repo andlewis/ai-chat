@@ -12,7 +12,7 @@ export class PromptComponent {
   config = input.required<Config>();
   isDarkMode = input.required<boolean>();
   send = output<string>();
-
+  isListening = false;
   text: string = '';
 
   validChatConfig(): boolean {
@@ -32,4 +32,18 @@ export class PromptComponent {
     if (event.key === 'Enter')
       this.onClickSend();
   }
+
+  onClickMicrophone(){
+    if(!this.isListening){
+      const navigator = window.navigator as any;
+      const constraints = { audio: true, video: false };
+      navigator.mediaDevices.getUserMedia(constraints).then((stream:any) => {
+        console.log('Microphone is ready');
+        this.isListening = !this.isListening;
+      });
+    } else {
+      this.isListening = !this.isListening;
+    }
+  }
+
 }
