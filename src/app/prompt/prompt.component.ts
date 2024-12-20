@@ -3,10 +3,10 @@ import { FormsModule } from '@angular/forms';
 import { Config } from '../data/models';
 
 @Component({
-    selector: 'app-prompt',
-    imports: [FormsModule],
-    templateUrl: './prompt.component.html',
-    styleUrl: './prompt.component.scss'
+  selector: 'app-prompt',
+  imports: [FormsModule],
+  templateUrl: './prompt.component.html',
+  styleUrl: './prompt.component.scss'
 })
 export class PromptComponent {
   config = input.required<Config>();
@@ -14,6 +14,7 @@ export class PromptComponent {
   send = output<string>();
   isListening = false;
   text: string = '';
+  recorder: any;
 
   validChatConfig(): boolean {
     return !!this.config().deployment && !!this.config().apiKey && !!this.config().apiVersion && !!this.config().endpoint;
@@ -33,16 +34,20 @@ export class PromptComponent {
       this.onClickSend();
   }
 
-  onClickMicrophone(){
-    if(!this.isListening){
+  onClickMicrophone() {
+    if (!this.isListening) {
       const navigator = window.navigator as any;
       const constraints = { audio: true, video: false };
-      navigator.mediaDevices.getUserMedia(constraints).then((stream:any) => {
-        console.log('Microphone is ready');
+
+      navigator.mediaDevices.getUserMedia(constraints).then((stream: any) => {
+        console.log('Microphone is ready and listening.');
+        this.recorder = new MediaRecorder(stream);
         this.isListening = !this.isListening;
       });
     } else {
+      console.log('Microphone is not listening.');
       this.isListening = !this.isListening;
+      this.recorder.stream.getAudioTracks().forEach((track: any) => track.stop());
     }
   }
 
